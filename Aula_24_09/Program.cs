@@ -12,6 +12,7 @@ namespace Aula_24_09
     {
         static void Main(string[] args)
         {
+            // conecxão com banco para pedir dados 
             MySqlConnection conexao;
             MySqlCommand cmd;
             conexao = new MySqlConnection("server=localhost;database=pam;Uid=root;Pwd='';");
@@ -34,8 +35,37 @@ namespace Aula_24_09
                 Console.WriteLine("ID Usuario:"+ rdr["id"]+"\n");
                 Console.WriteLine("Nome Usuario:" + rdr["nome"] + "\n");
             }
-                        Console.ReadKey();
+            rdr.Close();
+            // para inserir dados
+        Console.WriteLine("Inserir Dadosn\n\n");
+            string nome;
+            int doc;
+            Console.WriteLine("Digite um nome\n");
+            nome = Console.ReadLine();
+            Console.WriteLine("Digite o Doc\n");
+            doc = int.Parse(Console.ReadLine());
 
+            sql = "insert into Dados(nome,doc) value(@nome, @doc)";
+            cmd = new MySqlCommand(sql, conexao);
+            cmd.Parameters.AddWithValue("@nome",nome);
+            cmd.Parameters.AddWithValue("@doc",doc);
+            try
+            {
+                int linhaafetadas = cmd.ExecuteNonQuery();
+                if( linhaafetadas == 0)
+                {
+                    throw new Exception("Nenhuma linha afetada.");
+                }
+                else
+                {
+                    Console.Write("linhaafetadas: {0}", linhaafetadas);
+                }
+            }
+            catch (Exception ex) 
+            { 
+                Console.WriteLine(ex.Message);
+            }
+            Console.ReadKey();
             Paciente paciente = new Paciente();
             string opcao = "a";
             while (opcao.ToUpper() != "q");
